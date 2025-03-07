@@ -20,6 +20,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  useSidebar,
 } from "../ui/sidebar";
 import { Search } from "../search";
 import { usePathStore } from "@/stores/path";
@@ -47,6 +48,7 @@ const MAIN_ITEMS: SidebarItem[] = [
 
 export function AppSidebar() {
   const setPath = usePathStore((state) => state.setPath);
+  const { setOpenMobile } = useSidebar();
 
   return (
     <Sidebar>
@@ -66,12 +68,18 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuButton onClick={() => setPath("/home/m".split("/"))}>
+              <SidebarMenuButton
+                onClick={() => {
+                  const home = usePathStore.getState().home ?? "";
+                  setPath(home.split("/"));
+                  setOpenMobile(false);
+                }}
+              >
                 <Home />
                 <span>Home</span>
               </SidebarMenuButton>
               {MAIN_ITEMS.map((item, i) => (
-                <SidebarMenuButton key={i}>
+                <SidebarMenuButton key={i} onClick={() => setOpenMobile(false)}>
                   <item.icon />
                   <span>{item.label}</span>
                 </SidebarMenuButton>

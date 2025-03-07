@@ -6,6 +6,8 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { Providers } from "@/providers";
 import { PanelLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { NavBreadcrumbs } from "@/components/nav-breadcrumbs";
+import { SearchDialog } from "@/components/search/dialog";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,11 +37,14 @@ export default function RootLayout({
         <Providers>
           <AppSidebar />
           <div className="w-full">
-            <nav className="h-14 p-2 border-b flex items-center sticky top-0 left-0 bg-background">
+            <nav className="h-14 p-2 space-x-4 border-b flex items-center sticky top-0 left-0 bg-background">
               <SidebarTrigger />
+              <NavBreadcrumbs />
             </nav>
             <main className="p-4">{children}</main>
           </div>
+
+          <SearchDialog />
         </Providers>
       </body>
     </html>

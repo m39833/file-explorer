@@ -1,9 +1,7 @@
 "use client";
 
-import { Form } from "@/components/form";
 import { usePathStore } from "@/stores/path";
-import Link from "next/link";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState, useTransition } from "react";
 import { DirEntry, type TDirEntry } from "@/types/files";
 import { invoke } from "@tauri-apps/api/core";
 import { File, Folder, Link2 } from "lucide-react";
@@ -14,6 +12,8 @@ export default function Home() {
   const loading = usePathStore((state) => state.loading);
   const setPath = usePathStore((state) => state.setPath);
   const [dirContents, setDirContents] = useState<TDirEntry[]>([]);
+
+  const [isPending, startTransition] = useTransition();
 
   useLayoutEffect(() => {
     usePathStore.getState().init();
@@ -35,8 +35,12 @@ export default function Home() {
       .then(setDirContents);
   }, [path]);
 
+  if (isPending) {
+    return <div>loading..</div>;
+  }
+
   return (
-    <div className="grid sm:grid-cols-[repeat(auto-fit,minmax(200px,1fr))] grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-2 sm:gap-4 w-full">
+    <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-2 sm:gap-4 w-full">
       {dirContents.map((entry) => {
         return (
           <div key={entry.id} className="mx-auto">
@@ -45,6 +49,10 @@ export default function Home() {
               onDoubleClick={() => {
                 if (entry.type === "directory") {
                   setPath(entry.path.split("/"));
+                } else if (entry.type === "file") {
+                  startTransition(async () => {
+                    await invoke("open", { path: entry.path });
+                  });
                 }
               }}
             >

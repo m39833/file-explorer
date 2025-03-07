@@ -1,19 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "../ui/button";
-import {
-  CommandDialog,
-  CommandInput,
-  CommandList,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-} from "../ui/command";
 import { Search as SearchIcon } from "lucide-react";
+import { useSearchDialog } from "@/providers/search-dialog";
 
 export function Search() {
-  const [open, setOpen] = useState(false);
+  const { setOpen } = useSearchDialog();
 
   return (
     <>
@@ -32,10 +24,6 @@ export function Search() {
           <span className="text-xs">⌘</span>K
         </kbd>
       </Button>
-      <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Type a command or search..." />
-        <CommandList></CommandList>
-      </CommandDialog>
     </>
   );
 }
