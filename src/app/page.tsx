@@ -6,6 +6,7 @@ import { DirEntry, type TDirEntry } from "@/types/files";
 import { invoke } from "@tauri-apps/api/core";
 import { File, Folder, Link2 } from "lucide-react";
 import { truncateMid } from "@/utils";
+import { openPath } from "@tauri-apps/plugin-opener";
 
 export default function Home() {
   const path = usePathStore((state) => state.path);
@@ -50,9 +51,10 @@ export default function Home() {
                 if (entry.type === "directory") {
                   setPath(entry.path.split("/"));
                 } else if (entry.type === "file") {
-                  startTransition(async () => {
-                    await invoke("open", { path: entry.path });
-                  });
+                  // startTransition(() => {
+                  // openPath(entry.path);
+                  invoke("open", { path: entry.path });
+                  // });
                 }
               }}
             >
